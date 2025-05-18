@@ -3,9 +3,9 @@ import AuthContext from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const SignUp = () => {
-  const { user } = useContext(AuthContext);
+  
   const { userSignup } = useContext(AuthContext);
-  const uid = user?.uid;
+  
   const handleSignup = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -14,11 +14,7 @@ const SignUp = () => {
     const { email, password, ...userProfile } = Object.fromEntries(
       formData.entries()
     );
-    const newUser = {
-      ...userProfile,
-      email,
-      uid,
-    };
+
     // const email=formData.get('email');
     // const password=formData.get('password');
     console.log(email, password, userProfile);
@@ -28,6 +24,13 @@ const SignUp = () => {
         const userEmail = result.user.email;
         toast.success(`You signed up as ${userEmail}`);
 
+        const newUser = {
+          ...userProfile,
+          email,
+          uid:result.user?.uid,
+          creationTime: result.user?.metadata?.creationTime,
+          lastSignInTime: result.user?.metadata?.creationTime,
+        };
         //save profile info in the mongodb database
         fetch(`http://localhost:4000/users`, {
           method: "POST",
@@ -40,7 +43,8 @@ const SignUp = () => {
           .then((data) => {
             if (data.insertedId) {
               console.log("user in mongodb", data);
-              toast.success(`Your account has been created in mongodb.`)
+              toast.success(`Your account has been created in mongodb.`);
+              form.reset()
             }
           });
       })

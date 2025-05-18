@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { user, userSignout } = useContext(AuthContext);
-  console.log(user);
+  // console.log(user);
 
   const handleSignout=()=>{
     userSignout()

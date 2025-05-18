@@ -3,7 +3,8 @@ import AuthContext from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const SignIn = () => {
-  const { userSignin } = useContext(AuthContext);
+  const { userSignin, user } = useContext(AuthContext);
+  console.log(user)
   const handleSignin=e=>{
     e.preventDefault();
     const form=e.target;
@@ -13,6 +14,21 @@ const SignIn = () => {
         console.log(email, password);
         userSignin(email,password)
         .then((result)=>{
+          const signinInfo={
+            email,
+            lastSignInTime: result.user?.metadata?.lastSignInTime
+          }
+          fetch(`http://localhost:4000/users/`, {
+            method: 'PATCH',
+            headers: {
+              'content-type' : 'application/json'
+            },
+            body: JSON.stringify(signinInfo)
+          })
+          .then(res=>res.json())
+          .then(data=>{
+            console.log('update signin time patch', data)
+          })
           const userEmail=result.user.email
           toast.success(`${userEmail} is signed in.`)
         })

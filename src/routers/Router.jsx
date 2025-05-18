@@ -39,7 +39,9 @@ const router=createBrowserRouter([
            },
            {
             path: '/users',
-            element: <Users></Users>
+            element: <Users></Users>,
+            loader: ()=>fetch('http://localhost:4000/users'),
+            hydrateFallbackElement: <Loading></Loading>
            },
            {
             path: '/signin',
